@@ -7,6 +7,7 @@ import PasswordGenerator from './pages/tools/PasswordGenerator';
 import TimeTracker from './pages/tools/TimeTracker';
 import BudgetDashboard from './pages/tools/BudgetDashboard';
 import AccountPage from './pages/AccountPage';
+import LoadingSpinner from './components/LoadingSpinner';
 import './App.css';
 
 // A component to protect routes
@@ -15,8 +16,8 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="h-screen w-full flex justify-center items-center bg-dark-bg">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-brand-blue"></div>
+      <div className="h-screen w-full bg-dark-bg">
+        <LoadingSpinner className="h-full" />
       </div>
     );
   }
