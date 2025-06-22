@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useSearchParams } from 'react-router-dom';
 
 const LoginPage = () => {
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -9,6 +11,14 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
+
+  // URL parametresine göre başlangıç modunu ayarla
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    if (mode === 'register') {
+      setIsSigningUp(true);
+    }
+  }, [searchParams]);
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -50,12 +60,12 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-true-black">
-      <div className="w-full max-w-md p-8 space-y-6 bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-glow-neon-blue">
+    <div className="flex items-center justify-center min-h-screen bg-true-black px-4">
+      <div className="w-full max-w-md p-6 sm:p-8 space-y-6 bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-glow-neon-blue">
         <div className="text-center mb-4">
-          <h1 className="text-5xl font-bold text-white" style={{ textShadow: '0 0 10px rgba(59, 130, 246, 0.8)' }}>StarGrad</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white" style={{ textShadow: '0 0 10px rgba(59, 130, 246, 0.8)' }}>StarGrad</h1>
         </div>
-        <h2 className="text-2xl font-bold text-center text-gray-100">
+        <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-100">
           {isSigningUp ? 'Create Account' : 'Sign In'}
         </h2>
         <form className="space-y-6" onSubmit={handleAuth}>
@@ -73,7 +83,7 @@ const LoginPage = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full p-3 mt-2 text-gray-100 bg-gray-800/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-blue"
+                className="w-full p-3 sm:p-4 mt-2 text-gray-100 bg-gray-800/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-blue text-base"
               />
             </div>
           )}
@@ -90,7 +100,7 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full p-3 mt-2 text-gray-100 bg-gray-800/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-blue"
+              className="w-full p-3 sm:p-4 mt-2 text-gray-100 bg-gray-800/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-blue text-base"
             />
           </div>
           <div>
@@ -106,13 +116,13 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full p-3 mt-2 text-gray-100 bg-gray-800/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-blue"
+              className="w-full p-3 sm:p-4 mt-2 text-gray-100 bg-gray-800/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-blue text-base"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 font-bold text-white uppercase bg-neon-blue rounded-lg hover:bg-neon-blue/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-neon-blue disabled:opacity-50 transition-all duration-300"
+            className="w-full py-3 sm:py-4 font-bold text-white uppercase bg-neon-blue rounded-lg hover:bg-neon-blue/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-neon-blue disabled:opacity-50 transition-all duration-300 touch-manipulation text-base"
           >
             {loading
               ? 'Processing...'

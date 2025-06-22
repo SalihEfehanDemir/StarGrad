@@ -36,23 +36,47 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={session ? <Navigate to="/" replace /> : <LoginPage />} />
+      
+      {/* Public Homepage */}
       <Route 
-        path="/*"
+        path="/" 
+        element={
+          <MainLayout>
+            <HomePage />
+          </MainLayout>
+        } 
+      />
+      
+      {/* Protected Tool Routes */}
+      <Route 
+        path="/tools/*"
         element={
           <ProtectedRoute>
             <MainLayout>
               <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/tools/password-generator" element={<PasswordGenerator />} />
-                  <Route path="/tools/time-tracker" element={<TimeTracker />} />
-                  <Route path="/tools/budget-dashboard" element={<BudgetDashboard />} />
-                  <Route path="/account" element={<AccountPage />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="password-generator" element={<PasswordGenerator />} />
+                <Route path="time-tracker" element={<TimeTracker />} />
+                <Route path="budget-dashboard" element={<BudgetDashboard />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </MainLayout>
           </ProtectedRoute>
         }
       />
+      
+      {/* Protected Account Route */}
+      <Route 
+        path="/account" 
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <AccountPage />
+            </MainLayout>
+          </ProtectedRoute>
+        } 
+      />
+      
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
