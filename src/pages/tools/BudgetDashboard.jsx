@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { FaLandmark, FaPiggyBank, FaCreditCard, FaPlus, FaTimes, FaSpinner } from 'react-icons/fa';
+import { FaLandmark, FaPiggyBank, FaCreditCard, FaPlus, FaTimes } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../supabaseClient';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import ErrorMessage from '../../components/ErrorMessage';
 
 const BudgetDashboard = () => {
     const { session } = useAuth();
@@ -126,16 +128,20 @@ const BudgetDashboard = () => {
 
     if (loading) {
         return (
-            <div className="container mx-auto px-4 py-8 flex justify-center items-center h-screen">
-                <FaSpinner className="animate-spin text-brand-blue text-6xl" />
+            <div className="container mx-auto px-4 py-8 h-screen">
+                <LoadingSpinner className="h-full" size="xl" />
             </div>
         );
     }
     
     if (error) {
         return (
-            <div className="container mx-auto px-4 py-8 text-center">
-                <p className="text-red-500 text-lg">{error}</p>
+            <div className="container mx-auto px-4 py-8 pt-24">
+                <ErrorMessage 
+                    message={error} 
+                    onRetry={() => fetchData()} 
+                    className="max-w-md mx-auto"
+                />
             </div>
         );
     }

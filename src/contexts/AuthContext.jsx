@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { supabase } from '../supabaseClient';
 
 const AuthContext = createContext();
@@ -29,13 +29,14 @@ export const AuthProvider = ({ children }) => {
     setSession(null); // Explicitly clear the session
   };
 
-  const value = {
+  // Memoize the context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({
     signUp: (data) => supabase.auth.signUp(data),
     signIn: (data) => supabase.auth.signInWithPassword(data),
     signOut: handleSignOut,
     session,
     loading,
-  };
+  }), [session, loading]);
 
   return (
     <AuthContext.Provider value={value}>
@@ -45,5 +46,9 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }; 

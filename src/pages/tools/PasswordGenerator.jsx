@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaClipboard, FaSync } from 'react-icons/fa';
+import { FaClipboard } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const PasswordGenerator = () => {
@@ -91,7 +91,7 @@ const PasswordGenerator = () => {
           onClick={generatePassword} 
           className="w-full bg-brand-blue hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center transition-all duration-300 shadow-glow-blue hover:shadow-glow-blue-hover"
         >
-          <FaSync className="mr-2" /> Generate Password
+                      Generate Password
         </button>
       </motion.div>
     </div>
