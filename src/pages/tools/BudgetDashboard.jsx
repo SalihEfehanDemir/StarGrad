@@ -147,31 +147,31 @@ const BudgetDashboard = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 pt-24">
+        <div className="container mx-auto px-4 py-6 sm:py-8 pt-20 sm:pt-24">
             <motion.div 
-                className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
                 {/* Main Content */}
-                <div className="lg:col-span-2 space-y-8">
+                <div className="lg:col-span-2 space-y-6 sm:space-y-8">
                     {/* Net Worth & Accounts */}
-                    <div className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg p-6">
+                    <div className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg p-4 sm:p-6">
                         <h2 className="text-lg font-semibold text-gray-400 mb-2">Net Worth</h2>
-                        <p className="text-5xl font-bold text-white">${netWorth.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">${netWorth.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     </div>
                      <div>
                         <h2 className="text-2xl font-bold text-white mb-4">Accounts</h2>
                         {accounts.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {accounts.map(acc => (
                                     <div key={acc.id} className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-lg p-4">
                                         <div className="flex items-center space-x-3">
                                             <div className="text-brand-blue">{getAccountIcon(acc.type)}</div>
-                                            <h3 className="font-semibold text-gray-300">{acc.name}</h3>
+                                            <h3 className="font-semibold text-gray-300 text-sm sm:text-base">{acc.name}</h3>
                                         </div>
-                                        <p className={`text-xl font-semibold mt-2 ${acc.balance < 0 ? 'text-red-400' : 'text-white'}`}>
+                                        <p className={`text-lg sm:text-xl font-semibold mt-2 ${acc.balance < 0 ? 'text-red-400' : 'text-white'}`}>
                                             ${parseFloat(acc.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                         </p>
                                     </div>
@@ -185,16 +185,21 @@ const BudgetDashboard = () => {
 
                 {/* Transactions */}
                 <div className="lg:col-span-1">
-                    <div className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg p-6 h-full min-h-[400px]">
-                        <h2 className="text-2xl font-bold text-white mb-4">Recent Transactions</h2>
+                    <div className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg p-4 sm:p-6 h-full min-h-[300px] sm:min-h-[400px]">
+                        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Recent Transactions</h2>
                         <ul className="space-y-3">
                             {transactions.length > 0 ? transactions.map(t => (
                                 <li key={t.id} className="flex justify-between items-center p-3 bg-black/30 rounded-lg border border-transparent hover:border-brand-blue transition-colors">
-                                    <div><p className="font-semibold text-white">{t.title}</p><p className="text-sm text-gray-400">{t.subtitle}</p></div>
-                                    <p className={`font-semibold ${t.amount >= 0 ? 'text-green-400' : 'text-red-400'}`}>{t.amount >= 0 ? '+' : ''}${t.amount.toFixed(2)}</p>
+                                    <div className="min-w-0 flex-1 mr-3">
+                                        <p className="font-semibold text-white text-sm sm:text-base truncate">{t.title}</p>
+                                        <p className="text-xs sm:text-sm text-gray-400 truncate">{t.subtitle}</p>
+                                    </div>
+                                    <p className={`font-semibold text-sm sm:text-base flex-shrink-0 ${t.amount >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                        {t.amount >= 0 ? '+' : ''}${t.amount.toFixed(2)}
+                                    </p>
                                 </li>
                             )) : (
-                                <p className="text-gray-400 text-center mt-8">No transactions yet. Add one!</p>
+                                <p className="text-gray-400 text-center mt-8 text-sm sm:text-base">No transactions yet. Add one!</p>
                             )}
                         </ul>
                     </div>

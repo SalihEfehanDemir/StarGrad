@@ -33,28 +33,28 @@ const PasswordGenerator = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="container mx-auto px-4 py-6 sm:py-8 max-w-2xl">
       <motion.div 
-        className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg p-8"
+        className="bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg p-6 sm:p-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold mb-6 text-center text-white">Password Generator</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-white">Password Generator</h1>
         
         <div className="relative flex items-center mb-6">
           <input 
             type="text" 
             readOnly 
             value={password} 
-            className="p-4 border border-white/20 rounded-lg w-full bg-black/30 text-white focus:ring-2 focus:ring-brand-blue" 
+            className="p-3 sm:p-4 border border-white/20 rounded-lg w-full bg-black/30 text-white focus:ring-2 focus:ring-brand-blue text-sm sm:text-base" 
             placeholder="Your password will appear here" 
           />
           <button 
             onClick={copyToClipboard} 
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-blue p-2 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-blue p-2 transition-colors touch-manipulation"
           >
-            {copied ? <span className="text-brand-cyan text-sm font-medium">Copied!</span> : <FaClipboard size="1.2em" />}
+            {copied ? <span className="text-brand-cyan text-xs sm:text-sm font-medium">Copied!</span> : <FaClipboard size="1.2em" />}
           </button>
         </div>
         
@@ -89,7 +89,7 @@ const PasswordGenerator = () => {
 
         <button 
           onClick={generatePassword} 
-          className="w-full bg-brand-blue hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center transition-all duration-300 shadow-glow-blue hover:shadow-glow-blue-hover"
+          className="w-full bg-brand-blue hover:bg-blue-700 text-white font-bold py-3 sm:py-4 px-4 rounded-lg flex items-center justify-center transition-all duration-300 shadow-glow-blue hover:shadow-glow-blue-hover touch-manipulation text-sm sm:text-base"
         >
                       Generate Password
         </button>
