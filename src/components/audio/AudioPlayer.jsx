@@ -71,7 +71,11 @@ const AudioPlayer = () => {
 
       <div className="flex items-center justify-between mt-2">
         <div className="flex items-center space-x-2 w-1/3">
-          <button onClick={() => handleVolumeChange(volume > 0 ? 0 : 50)} className="text-gray-300 hover:text-white transition-colors">
+          <button 
+            onClick={() => handleVolumeChange(volume > 0 ? 0 : 50)} 
+            className="text-gray-300 hover:text-white transition-colors"
+            aria-label={volume > 0 ? 'Mute' : 'Unmute'}
+          >
             {volume > 0 ? <Volume2 size={20} /> : <VolumeX size={20} />}
           </button>
           <CustomSlider 
@@ -83,16 +87,17 @@ const AudioPlayer = () => {
         </div>
         
         <div className="flex items-center space-x-4">
-          <button onClick={playPrev} className="text-gray-300 hover:text-white transition-colors">
+          <button onClick={playPrev} className="text-gray-300 hover:text-white transition-colors" aria-label="Previous track">
             <SkipBack size={22} />
           </button>
           <button 
             onClick={togglePlayPause} 
             className="w-12 h-12 flex items-center justify-center bg-brand-blue/80 hover:bg-brand-blue rounded-full transition-colors"
+            aria-label={isPlaying ? 'Pause' : 'Play'}
           >
             {isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-1" />}
           </button>
-          <button onClick={playNext} className="text-gray-300 hover:text-white transition-colors">
+          <button onClick={playNext} className="text-gray-300 hover:text-white transition-colors" aria-label="Next track">
             <SkipForward size={22} />
           </button>
         </div>
@@ -103,4 +108,4 @@ const AudioPlayer = () => {
   );
 };
 
-export default AudioPlayer;
+export default React.memo(AudioPlayer);

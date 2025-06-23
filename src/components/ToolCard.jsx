@@ -14,4 +14,4 @@ const ToolCard = ({ children, className = '' }) => {
   );
 };
 
-export default ToolCard; 
+export default React.memo(ToolCard); 

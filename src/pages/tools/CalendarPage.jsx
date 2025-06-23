@@ -6,6 +6,7 @@ import { useCalendarEvents } from '../../hooks/useCalendarEvents';
 import { useXP } from '../../contexts/XPContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit, Trash2, X, Calendar as CalendarIcon, Clock, Check, SkipForward } from 'lucide-react';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const colors = [ 'primary', 'secondary', 'slate', 'gray', 'purple', 'pink' ];
 const colorClasses = {
@@ -44,18 +45,18 @@ const EventModal = ({ isOpen, onClose, onSave, event }) => {
 
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-dark-bg border border-border-color rounded-lg p-6 w-full max-w-md relative shadow-2xl">
-                <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-white"><X /></button>
-                <h2 className="text-xl font-bold mb-4">{event ? 'Edit Event' : 'Add Event'}</h2>
+            <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-dark-bg border border-border-color rounded-lg p-4 sm:p-6 w-full max-w-md relative shadow-2xl mx-2 sm:mx-0">
+                <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-white touch-manipulation p-1"><X size={20} /></button>
+                <h2 className="text-lg sm:text-xl font-bold mb-4 pr-8">{event ? 'Edit Event' : 'Add Event'}</h2>
                 <form onSubmit={handleSubmit}>
-                    <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Event Title" className="w-full p-3 mb-4 bg-white/5 rounded-lg border border-border-color focus:ring-2 focus:ring-primary outline-none" required />
-                    <input type="time" value={time} onChange={e => setTime(e.target.value)} className="w-full p-3 mb-4 bg-white/5 rounded-lg border border-border-color focus:ring-2 focus:ring-primary outline-none" required/>
+                    <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Event Title" className="w-full p-2.5 sm:p-3 mb-4 bg-white/5 rounded-lg border border-border-color focus:ring-2 focus:ring-primary outline-none text-sm sm:text-base" required />
+                    <input type="time" value={time} onChange={e => setTime(e.target.value)} className="w-full p-2.5 sm:p-3 mb-4 bg-white/5 rounded-lg border border-border-color focus:ring-2 focus:ring-primary outline-none text-sm sm:text-base" required/>
                     <div className="flex justify-around mb-4">
                         {colors.map(c => (
-                            <button type="button" key={c} onClick={() => setColor(c)} className={`w-8 h-8 rounded-full ${colorClasses[c].text.replace('text-', 'bg-')} ${color === c ? 'ring-2 ring-white' : ''}`}></button>
+                            <button type="button" key={c} onClick={() => setColor(c)} className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full ${colorClasses[c].text.replace('text-', 'bg-')} ${color === c ? 'ring-2 ring-white' : ''} touch-manipulation`}></button>
                         ))}
                     </div>
-                    <button type="submit" className="w-full bg-primary hover:bg-primary/80 text-dark-bg p-3 rounded-lg font-bold">Save Event</button>
+                    <button type="submit" className="w-full bg-primary hover:bg-primary/80 text-dark-bg p-2.5 sm:p-3 rounded-lg font-bold touch-manipulation">Save Event</button>
                 </form>
             </motion.div>
         </motion.div>
@@ -67,7 +68,7 @@ const CalendarPage = () => {
     const [selectedDay, setSelectedDay] = useState(new Date());
     const [isModalOpen, setModalOpen] = useState(false);
     const [editingEvent, setEditingEvent] = useState(null);
-    const { events, addEvent, updateEvent, deleteEvent, updateEventStatus } = useCalendarEvents();
+    const { events, loading, addEvent, updateEvent, deleteEvent, updateEventStatus } = useCalendarEvents();
     const { addXP } = useXP();
     const EVENT_XP = 15;
 
@@ -109,8 +110,8 @@ const CalendarPage = () => {
     }, [events, selectedDay]);
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="min-h-screen flex flex-col md:flex-row p-4 gap-4">
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+            <div className="min-h-screen flex flex-col lg:flex-row p-3 sm:p-4 gap-4">
                 <EventModal
                     isOpen={isModalOpen}
                     onClose={() => { setModalOpen(false); setEditingEvent(null); }}
@@ -118,16 +119,16 @@ const CalendarPage = () => {
                     event={editingEvent}
                 />
 
-                <aside className="w-full md:w-1/3 lg:w-1/4 p-4 bg-glass backdrop-blur-xl border border-border-color rounded-2xl shadow-xl">
+                <aside className="w-full lg:w-1/3 xl:w-1/4 p-3 sm:p-4 bg-glass backdrop-blur-xl border border-border-color rounded-2xl shadow-xl">
                     <DayPicker
                         mode="single"
                         selected={selectedDay}
                         onSelect={handleSelectDay}
                         defaultMonth={selectedDay}
                         classNames={{
-                            head_cell: 'text-light-gray font-normal',
+                            head_cell: 'text-light-gray font-normal text-sm',
                             cell: 'text-center',
-                            day: 'h-10 w-10 rounded-full hover:bg-primary/20 transition-colors',
+                            day: 'h-8 w-8 sm:h-10 sm:w-10 rounded-full hover:bg-primary/20 transition-colors text-sm sm:text-base',
                             day_selected: 'bg-primary text-dark-bg hover:bg-primary/90',
                             day_today: 'text-primary font-bold ring-1 ring-primary',
                             day_outside: 'text-slate-600',
@@ -140,26 +141,32 @@ const CalendarPage = () => {
                     />
                 </aside>
 
-                <main className="flex-1 p-6 bg-glass backdrop-blur-xl border border-border-color rounded-2xl shadow-xl">
-                    <header className="flex justify-between items-center mb-6">
-                        <div>
-                            <h1 className="text-3xl font-bold">
+                <main className="flex-1 p-4 sm:p-6 bg-glass backdrop-blur-xl border border-border-color rounded-2xl shadow-xl">
+                    <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3 sm:gap-0">
+                        <div className="min-w-0 flex-1">
+                            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold truncate">
                                 {selectedDay && isValid(selectedDay) ? format(selectedDay, 'MMMM d, yyyy') : 'Select a day'}
                             </h1>
-                            <p className="text-light-gray">{selectedDay ? format(selectedDay, 'eeee') : ''}</p>
+                            <p className="text-light-gray text-sm sm:text-base">{selectedDay ? format(selectedDay, 'eeee') : ''}</p>
                         </div>
                         <button 
                             onClick={() => { setEditingEvent(null); setModalOpen(true); }} 
-                            className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-dark-bg font-bold py-2 px-4 rounded-lg disabled:bg-gray-600"
+                            className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-dark-bg font-bold py-2 px-3 sm:px-4 rounded-lg disabled:bg-gray-600 text-sm sm:text-base touch-manipulation w-full sm:w-auto justify-center"
                             disabled={!selectedDay}
                         >
-                            <Plus size={20} /> Add Event
+                            <Plus size={16} className="sm:hidden" />
+                            <Plus size={20} className="hidden sm:block" />
+                            <span>Add Event</span>
                         </button>
                     </header>
                     
                     <div className="space-y-4">
                         <AnimatePresence>
-                            {eventsForSelectedDay.length > 0 ? (
+                            {loading ? (
+                                <div className="flex justify-center items-center h-full pt-16">
+                                    <LoadingSpinner />
+                                </div>
+                            ) : eventsForSelectedDay.length > 0 ? (
                                 eventsForSelectedDay.map(event => {
                                     const colorClass = colorClasses[event.color] || colorClasses['primary'];
                                     return (
@@ -167,20 +174,20 @@ const CalendarPage = () => {
                                             key={event.id}
                                             layout
                                             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -30 }}
-                                            className={`p-4 rounded-lg border-l-4 ${colorClass.bg} ${colorClass.border}`}
+                                            className={`p-3 sm:p-4 rounded-lg border-l-4 ${colorClass.bg} ${colorClass.border}`}
                                         >
-                                            <div className="flex justify-between">
-                                                <div>
-                                                    <p className={`font-bold text-lg ${colorClass.text}`}>{event.title}</p>
-                                                    <p className="text-light-gray text-sm flex items-center gap-2"><Clock size={14} /> {event.time}</p>
+                                            <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0">
+                                                <div className="min-w-0 flex-1">
+                                                    <p className={`font-bold text-base sm:text-lg ${colorClass.text} truncate`}>{event.title}</p>
+                                                    <p className="text-light-gray text-sm flex items-center gap-1 sm:gap-2"><Clock size={12} className="sm:hidden" /><Clock size={14} className="hidden sm:block" /> {event.time}</p>
                                                 </div>
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
                                                     {event.status === 'pending' && <>
-                                                        <button onClick={() => handleStatusUpdate(event.id, 'done')} className="p-2 hover:bg-green-500/20 rounded-full text-green-400"><Check/></button>
-                                                        <button onClick={() => handleStatusUpdate(event.id, 'skipped')} className="p-2 hover:bg-yellow-500/20 rounded-full text-yellow-400"><SkipForward/></button>
+                                                        <button onClick={() => handleStatusUpdate(event.id, 'done')} className="p-1.5 sm:p-2 hover:bg-green-500/20 rounded-full text-green-400 touch-manipulation"><Check size={14} className="sm:hidden" /><Check size={16} className="hidden sm:block" /></button>
+                                                        <button onClick={() => handleStatusUpdate(event.id, 'skipped')} className="p-1.5 sm:p-2 hover:bg-yellow-500/20 rounded-full text-yellow-400 touch-manipulation"><SkipForward size={14} className="sm:hidden" /><SkipForward size={16} className="hidden sm:block" /></button>
                                                     </>}
-                                                    {event.status === 'done' && <span className="text-green-400 font-bold">Done! +{EVENT_XP}XP</span>}
-                                                    {event.status === 'skipped' && <span className="text-yellow-400">Skipped</span>}
+                                                    {event.status === 'done' && <span className="text-green-400 font-bold text-xs sm:text-sm">Done! +{EVENT_XP}XP</span>}
+                                                    {event.status === 'skipped' && <span className="text-yellow-400 text-xs sm:text-sm">Skipped</span>}
                                                     <button onClick={() => { 
                                                         const eventDate = parseISO(event.date);
                                                         if(isValid(eventDate)) {
@@ -188,8 +195,8 @@ const CalendarPage = () => {
                                                             setSelectedDay(eventDate); 
                                                             setModalOpen(true); 
                                                         }
-                                                    }} className="p-2 hover:bg-white/10 rounded-full"><Edit size={16}/></button>
-                                                    <button onClick={() => deleteEvent(event.id)} className="p-2 hover:bg-red-500/20 rounded-full text-red-400"><Trash2 size={16}/></button>
+                                                    }} className="p-1.5 sm:p-2 hover:bg-white/10 rounded-full touch-manipulation"><Edit size={14} className="sm:hidden" /><Edit size={16} className="hidden sm:block" /></button>
+                                                    <button onClick={() => deleteEvent(event.id)} className="p-1.5 sm:p-2 hover:bg-red-500/20 rounded-full text-red-400 touch-manipulation"><Trash2 size={14} className="sm:hidden" /><Trash2 size={16} className="hidden sm:block" /></button>
                                                 </div>
                                             </div>
                                         </motion.div>

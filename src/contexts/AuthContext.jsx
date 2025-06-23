@@ -30,13 +30,44 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Memoize the context value to prevent unnecessary re-renders
-  const value = useMemo(() => ({
-    signUp: (data) => supabase.auth.signUp(data),
-    signIn: (data) => supabase.auth.signInWithPassword(data),
-    signOut: handleSignOut,
-    session,
-    loading,
-  }), [session, loading]);
+  const value = useMemo(() => {
+    const signUp = async (data) => {
+      // Sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp(data);
+
+      if (authError) {
+        throw authError;
+      }
+      
+      if (authData.user) {
+          // Insert into profiles table
+          const { error: profileError } = await supabase
+              .from('profiles')
+              .insert({ 
+                  id: authData.user.id, 
+                  username: data.options.data.username,
+                  total_xp: 0,
+                  level: 0,
+              });
+
+          if (profileError) {
+              // Note: In a real app, you might want to handle this more gracefully,
+              // maybe by deleting the user if the profile creation fails.
+              throw profileError;
+          }
+      }
+      
+      return { data: authData, error: authError };
+    };
+
+    return {
+      signUp: signUp,
+      signIn: (data) => supabase.auth.signInWithPassword(data),
+      signOut: handleSignOut,
+      session,
+      loading,
+    };
+  }, [session, loading]);
 
   return (
     <AuthContext.Provider value={value}>

@@ -16,6 +16,8 @@ export default {
         'dark-bg': '#0D1117',
         'primary': '#00f6ff',
         'secondary': '#ff00ff',
+        'amber': '#F59E0B',
+        'cyan': '#06B6D4',
         'glass': 'rgba(13, 17, 23, 0.7)',
         'light-gray': '#8B949E',
         'border-color': 'rgba(255, 255, 255, 0.1)',

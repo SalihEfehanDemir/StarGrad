@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ToolCard from '../../components/ToolCard';
 import {
   FaCalculator, FaLock, FaClock, FaStickyNote, FaWind, FaWallet,
   FaBullseye, FaHeartbeat, FaLightbulb, FaBrain, FaTrophy, FaChartLine,
@@ -13,13 +12,6 @@ const HomePage = () => {
   const { session } = useAuth();
 
   const productivityTools = [
-    {
-      title: 'Goal Tracker',
-      description: 'Set, track, and conquer your personal and professional goals.',
-      icon: <FaBullseye className="text-4xl text-purple-400" />,
-      link: '/tools/goals',
-      badge: 'New',
-    },
     {
       title: 'Event Calendar',
       description: 'Organize your schedule, plan events, and track your time.',
@@ -54,15 +46,15 @@ const HomePage = () => {
   ];
   
   const utilityTools = [
-    { name: "Password Generator", path: "/tools/password-generator", icon: <FaKey className="text-4xl text-brand-blue" />, description: "Create strong and secure passwords." },
-    { name: "Budget Tracker", path: "/tools/budget-dashboard", icon: <FaCoins className="text-4xl text-brand-amber" />, description: "Manage your finances and track spending." },
+    { name: "Password Generator", path: "/tools/password-generator", icon: <FaKey className="text-4xl text-primary" />, description: "Create strong and secure passwords." },
+    { name: "Budget Tracker", path: "/tools/budget-dashboard", icon: <FaCoins className="text-4xl text-amber" />, description: "Manage your finances and track spending." },
     { name: "BMI Calculator", path: "/tools/bmi-calculator", icon: <FaHeartbeat className="text-4xl text-red-400" />, description: "Calculate and track your BMI." },
   ];
 
   const features = [
-    { icon: <FaShieldAlt className="text-3xl text-brand-blue" />, title: "Secure & Private", description: "Your data stays with you. All tools work locally with optional cloud sync." },
-    { icon: <FaRocket className="text-3xl text-brand-cyan" />, title: "Lightning Fast", description: "Optimized for speed. Get things done without waiting around." },
-    { icon: <FaBolt className="text-3xl text-brand-amber" />, title: "Always Available", description: "Works offline and online. Your tools are there when you need them." },
+    { icon: <FaShieldAlt className="text-3xl text-primary" />, title: "Secure & Private", description: "Your data stays with you. All tools work locally with optional cloud sync." },
+    { icon: <FaRocket className="text-3xl text-cyan" />, title: "Lightning Fast", description: "Optimized for speed. Get things done without waiting around." },
+    { icon: <FaBolt className="text-3xl text-amber" />, title: "Always Available", description: "Works offline and online. Your tools are there when you need them." },
     { icon: <FaUsers className="text-3xl text-green-400" />, title: "User Focused", description: "Built with real user needs in mind. Simple, powerful, and intuitive." }
   ];
 
@@ -94,7 +86,7 @@ const HomePage = () => {
         >
           <div className="max-w-4xl mx-auto px-4">
           <motion.h1 
-              className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-shadow-glow"
+              className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.2 }}
@@ -116,7 +108,7 @@ const HomePage = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.6 }}
           >
-                <Link to="/tools/focus-board" className="bg-brand-blue hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-glow-blue hover:shadow-glow-blue-hover touch-manipulation">
+                <Link to="/tools/focus-board" className="bg-primary hover:bg-cyan-600 text-dark-bg font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-glow-blue hover:shadow-glow-blue-hover touch-manipulation">
                   Get Started &rarr;
             </Link>
                 <button className="bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 border border-white/20 touch-manipulation">
@@ -247,10 +239,10 @@ const HomePage = () => {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-blue mb-2">
+                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-2">
                     {stat.number}
                   </div>
-                  <div className="text-gray-400 text-sm sm:text-base">{stat.label}</div>
+                  <p className="text-gray-400">{stat.label}</p>
                 </motion.div>
               ))}
             </div>
@@ -262,125 +254,97 @@ const HomePage = () => {
       <div className="bg-black/20 py-16 sm:py-20">
         <div className="container mx-auto px-4">
           <motion.section
+            className="flex flex-col lg:flex-row items-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-                Everything You Need, Nothing You Don't
-              </h2>
-              <p className="text-gray-300 mb-8 text-lg leading-relaxed">
-                StarGrad is designed to be your digital swiss army knife. 
-                Whether you're managing passwords, tracking time, or monitoring expenses, 
-                our tools are built to integrate seamlessly into your workflow.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-3xl mx-auto">
+            <div className="lg:w-1/2 lg:pr-12 mb-8 lg:mb-0">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Everything You Need, Nothing You Don't.</h2>
+              <p className="text-gray-400 mb-6">StarGrad is designed to be your all-in-one productivity hub. We focus on core functionality and a clean, intuitive interface.</p>
+              <ul className="space-y-3">
                 {benefits.map((benefit, index) => (
-                  <motion.div
-                    key={benefit}
-                    className="flex items-start space-x-3"
+                  <motion.li
+                    key={index}
+                    className="flex items-center"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     viewport={{ once: true }}
                   >
-                    <FaCheckCircle className="text-brand-cyan mt-1 flex-shrink-0" />
-                    <span className="text-gray-300">{benefit}</span>
-                  </motion.div>
+                    <FaCheckCircle className="text-primary mr-3 flex-shrink-0" />
+                    <span>{benefit}</span>
+                  </motion.li>
                 ))}
+              </ul>
               </div>
+            <div className="lg:w-1/2">
+              <motion.img 
+                src="/images/image.png" 
+                alt="StarGrad Dashboard"
+                className="rounded-xl shadow-2xl"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+              />
             </div>
           </motion.section>
         </div>
       </div>
 
-      {/* Testimonials Section */}
+      {/* Call to Action Section */}
       <div className="py-16 sm:py-20">
         <div className="container mx-auto px-4">
           <motion.section
+            className="bg-gradient-to-r from-primary to-secondary p-8 rounded-xl text-center shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
-              What Our Users Say
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl font-bold text-dark-bg mb-4">
+                Ready to Boost Your Productivity?
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                {
-                  quote: "StarGrad has completely transformed how I manage my daily tasks. The password generator alone has saved me countless hours.",
-                  author: "Sarah Johnson",
-                  role: "Digital Marketer"
-                },
-                {
-                  quote: "The time tracking feature is incredibly intuitive. I finally have clear insights into where my time actually goes.",
-                  author: "Mike Chen",
-                  role: "Freelance Developer"
-                },
-                {
-                  quote: "Budget tracking made simple. I love how everything syncs seamlessly across my devices.",
-                  author: "Emily Rodriguez",
-                  role: "Small Business Owner"
-                }
-              ].map((testimonial, index) => (
-                <motion.div
-                  key={testimonial.author}
-                  className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <div className="flex mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <FaStar key={i} className="text-brand-amber" />
-                    ))}
-                  </div>
-                  <p className="text-gray-300 mb-4 italic">"{testimonial.quote}"</p>
-                  <div>
-                    <div className="font-bold text-white">{testimonial.author}</div>
-                    <div className="text-gray-400 text-sm">{testimonial.role}</div>
-                  </div>
-                </motion.div>
-              ))}
+              <p className="text-dark-bg/80 mb-6">
+                Join thousands of users who are already getting more done with StarGrad. It's free to get started.
+              </p>
+              <Link
+                to="/tools/focus-board"
+                className="bg-white text-dark-bg font-bold py-3 px-8 rounded-lg transition-transform duration-300 hover:scale-105 shadow-lg"
+              >
+                Get Started for Free
+              </Link>
             </div>
           </motion.section>
         </div>
       </div>
 
-      {/* Footer Section */}
-      <div className="bg-black/40 py-12 sm:py-16">
-        <div className="container mx-auto px-4">
-          <motion.section
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-              Connect With Us
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-              Follow us for updates, tips, and new features.
-            </p>
-            <div className="flex justify-center space-x-6">
-              <button className="p-4 border border-white/20 hover:border-white/40 hover:bg-white/10 rounded-lg transition-all duration-300">
-                <FaGithub className="text-white text-2xl" />
-              </button>
-              <button className="p-4 border border-white/20 hover:border-white/40 hover:bg-white/10 rounded-lg transition-all duration-300">
-                <FaTwitter className="text-white text-2xl" />
-              </button>
-              <button className="p-4 border border-white/20 hover:border-white/40 hover:bg-white/10 rounded-lg transition-all duration-300">
-                <FaLinkedin className="text-white text-2xl" />
-              </button>
+      <footer className="py-8">
+        <div className="container mx-auto px-4 border-t border-white/10 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div className="mb-4 md:mb-0">
+              <h3 className="text-xl font-bold">StarGrad</h3>
+              <p className="text-gray-400 text-sm">Your all-in-one productivity suite.</p>
             </div>
-          </motion.section>
+            <div className="flex justify-center space-x-6 text-2xl text-gray-400">
+              <a href="#" className="hover:text-primary transition-colors"><FaGithub /></a>
+              <a href="#" className="hover:text-primary transition-colors"><FaTwitter /></a>
+              <a href="#" className="hover:text-primary transition-colors"><FaLinkedin /></a>
+            </div>
+          </div>
+          <div className="mt-8 text-center text-gray-500 text-sm">
+            <p>&copy; {new Date().getFullYear()} StarGrad. All rights reserved.</p>
+            <p className="mt-2">
+              <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
+              <span className="mx-2">&middot;</span>
+              <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+            </p>
+            </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 };

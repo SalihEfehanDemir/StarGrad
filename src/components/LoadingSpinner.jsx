@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 
 const LoadingSpinner = ({ size = 'lg', className = '' }) => {
@@ -20,4 +21,4 @@ const LoadingSpinner = ({ size = 'lg', className = '' }) => {
   );
 };
 
-export default LoadingSpinner; 
+export default React.memo(LoadingSpinner); 

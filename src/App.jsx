@@ -15,7 +15,6 @@ import AccountPage from './pages/AccountPage';
 import LoadingSpinner from './components/LoadingSpinner';
 import Navbar from './components/Navbar';
 import XPDisplay from './components/XPDisplay';
-import GoalTracker from './pages/tools/GoalTracker';
 import CalendarPage from './pages/tools/CalendarPage';
 import AnimatedPage from './components/AnimatedPage';
 import { AnimatePresence } from 'framer-motion';
@@ -46,7 +45,6 @@ const AppRoutes = () => {
           <Route path="/tools/zen-mode" element={<AnimatedPage><ZenMode /></AnimatedPage>} />
           <Route path="/tools/pomodoro-timer" element={<AnimatedPage><PomodoroTimer /></AnimatedPage>} />
           <Route path="/tools/budget-dashboard" element={<AnimatedPage><BudgetDashboard /></AnimatedPage>} />
-          <Route path="/tools/goals" element={<AnimatedPage><GoalTracker /></AnimatedPage>} />
           <Route path="/tools/calendar" element={<AnimatedPage><CalendarPage /></AnimatedPage>} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -56,7 +54,9 @@ const AppRoutes = () => {
 }
 
 function App() {
-  const { loading } = useAuth();
+  const { loading, session } = useAuth();
+  const location = useLocation();
+  const hideNavbarAndXP = location.pathname === '/login';
 
   if (loading) {
     return <div className="flex items-center justify-center h-screen bg-dark-bg"><LoadingSpinner /></div>;
@@ -64,8 +64,12 @@ function App() {
 
   return (
     <>
+      {!hideNavbarAndXP && (
+    <>
       <Navbar />
       <XPDisplay />
+        </>
+      )}
       <AppRoutes />
     </>
   );

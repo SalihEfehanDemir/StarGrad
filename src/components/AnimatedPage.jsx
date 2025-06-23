@@ -46,4 +46,4 @@ const AnimatedPage = ({ children, hasNavbar = true }) => {
   );
 };
 
-export default AnimatedPage; 
+export default React.memo(AnimatedPage); 

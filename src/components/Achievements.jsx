@@ -1,103 +1,104 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useXP } from '../contexts/XPContext';
-import { useGoals } from '../hooks/useGoals';
-import { Target, Award, Calendar, Clock, BarChart2 } from 'lucide-react';
+import { useCalendarEvents } from '../hooks/useCalendarEvents';
+import { useNotes } from '../hooks/useNotes';
+import { useFocusBoard } from '../hooks/useFocusBoard';
+import { Target, Award, Calendar, Clock, BarChart2, Edit, CheckSquare } from 'lucide-react';
 
 const achievementsList = [
     {
-        id: 'GOAL_GETTER',
-        title: 'Goal Getter',
-        description: 'Complete your first goal.',
-        icon: <Target />,
-        check: ({ goals }) => goals.some(g => g.subtasks.length > 0 && g.subtasks.every(st => st.completed)),
-    },
-    {
-        id: 'STREAK_MASTER_7',
-        title: 'Weekly Warrior',
-        description: 'Be active for 7 consecutive days.',
-        icon: <Calendar />,
-        check: ({ xpHistory }) => checkStreak(xpHistory, 7),
-    },
-    {
-        id: 'TIME_BENDER_50',
-        title: 'Time Bender',
-        description: 'Complete 50 Pomodoro sessions.',
-        icon: <Clock />,
-        check: () => (parseInt(localStorage.getItem('sessionCount') || '0', 10) >= 50),
-    },
-    {
-        id: 'XP_NOVICE',
+        id: 'xp_100',
         title: 'Novice Adventurer',
-        description: 'Earn your first 100 XP.',
-        icon: <Award />,
-        check: ({ totalXP }) => totalXP >= 100,
+        description: 'Reach 100 XP',
+        icon: <Award className="text-bronze" />,
+        check: (data) => data.xp >= 100,
     },
     {
-        id: 'XP_MASTER',
-        title: 'XP Master',
-        description: 'Reach a total of 1000 XP.',
-        icon: <BarChart2 />,
-        check: ({ totalXP }) => totalXP >= 1000,
+        id: 'xp_500',
+        title: 'Skilled Explorer',
+        description: 'Reach 500 XP',
+        icon: <Award className="text-silver" />,
+        check: (data) => data.xp >= 500,
+    },
+    {
+        id: 'xp_1000',
+        title: 'Master Journeyman',
+        description: 'Reach 1000 XP',
+        icon: <Award className="text-gold" />,
+        check: (data) => data.xp >= 1000,
+    },
+    {
+        id: 'tasks_10',
+        title: 'Task Tamer',
+        description: 'Complete 10 tasks on the Focus Board',
+        icon: <CheckSquare className="text-blue-500" />,
+        check: (data) => data.completedTasks >= 10,
+    },
+    {
+        id: 'notes_5',
+        title: 'Note Taker',
+        description: 'Create 5 smart notes',
+        icon: <Edit className="text-yellow-500" />,
+        check: (data) => data.notesCount >= 5,
+    },
+    {
+        id: 'events_5',
+        title: 'Event Planner',
+        description: 'Schedule 5 events in the calendar',
+        icon: <Calendar className="text-red-500" />,
+        check: (data) => data.eventsCount >= 5,
     },
 ];
 
-const checkStreak = (xpHistory, length) => {
-    const dates = Object.keys(xpHistory).sort();
-    if (dates.length < length) return false;
-    let consecutiveDays = 0;
-    let lastDate = null;
-    
-    for (const dateStr of dates) {
-        const currentDate = new Date(dateStr);
-        if (lastDate) {
-            const diff = (currentDate - lastDate) / (1000 * 60 * 60 * 24);
-            if (diff === 1) {
-                consecutiveDays++;
-            } else {
-                consecutiveDays = 1;
-            }
-        } else {
-            consecutiveDays = 1;
-        }
-        if (consecutiveDays >= length) return true;
-        lastDate = currentDate;
-    }
-    return false;
+const AchievementCard = ({ achievement, earned }) => {
+    return (
+        <motion.div
+            className={`flex items-center p-4 rounded-lg transition-all duration-300 ${
+                earned ? 'bg-green-100 dark:bg-green-900/50 border-l-4 border-green-500' : 'bg-white dark:bg-slate-800'
+            }`}
+            whileHover={{ scale: earned ? 1.02 : 1.05 }}
+        >
+            <div className={`mr-4 text-3xl ${earned ? 'text-green-500' : 'text-slate-400'}`}>{achievement.icon}</div>
+            <div>
+                <h3 className={`font-bold ${earned ? 'text-slate-800 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>
+                    {achievement.title}
+                </h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{achievement.description}</p>
+            </div>
+        </motion.div>
+    );
 };
 
-
 const Achievements = () => {
-    const { totalXP, xpHistory } = useXP();
-    const { goals } = useGoals();
+    const { totalXP } = useXP();
+    const { events } = useCalendarEvents();
+    const { notes } = useNotes();
+    const { dailyTasks } = useFocusBoard();
 
-    const unlockedAchievements = achievementsList.filter(ach => ach.check({ totalXP, xpHistory, goals }));
+    const data = {
+        xp: totalXP,
+        eventsCount: events.length,
+        notesCount: notes.length,
+        completedTasks: dailyTasks.filter(t => t.is_completed).length,
+    };
+
+    const earnedAchievements = achievementsList.filter(a => a.check(data));
+    const notEarnedAchievements = achievementsList.filter(a => !a.check(data));
 
     return (
-        <div className="bg-glass border border-border-color p-6 rounded-2xl shadow-lg">
-            <h3 className="text-xl font-bold mb-4">Achievements</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {achievementsList.map(ach => {
-                    const isUnlocked = unlockedAchievements.some(unlocked => unlocked.id === ach.id);
-                    return (
-                        <motion.div
-                            key={ach.id}
-                            className={`p-4 rounded-lg flex flex-col items-center justify-center text-center transition-all duration-300 ${
-                                isUnlocked ? 'bg-primary/10 text-primary' : 'bg-white/5 text-light-gray'
-                            }`}
-                            title={`${ach.title}: ${ach.description}`}
-                        >
-                            <div className={`text-4xl ${isUnlocked ? 'text-primary' : 'text-gray-600'}`}>
-                                {ach.icon}
-                            </div>
-                            <h4 className="font-bold mt-2 text-sm">{ach.title}</h4>
-                            {!isUnlocked && <p className="text-xs text-gray-600">(Locked)</p>}
-                        </motion.div>
-                    );
-                })}
+        <div className="p-4 md:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-slate-800 dark:text-slate-100">Achievements</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {earnedAchievements.map((ach) => (
+                    <AchievementCard key={ach.id} achievement={ach} earned={true} />
+                ))}
+                {notEarnedAchievements.map((ach) => (
+                    <AchievementCard key={ach.id} achievement={ach} earned={false} />
+                ))}
             </div>
         </div>
     );
 };
 
-export default Achievements; 
+export default React.memo(Achievements); 

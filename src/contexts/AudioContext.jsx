@@ -3,9 +3,9 @@ import React, { createContext, useContext, useState, useMemo, useRef, useCallbac
 const AudioContext = createContext();
 
 const tracks = [
-  { name: 'Lofi Chill', src: 'https://cdn.pixabay.com/download/audio/2022/02/10/audio_1c8d1969c3.mp3' },
+  { name: 'Lofi Chill', src: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1f72fffd73.mp3' },
   { name: 'Forest River', src: 'https://cdn.pixabay.com/download/audio/2022/08/20/audio_6b5a133400.mp3' },
-  { name: 'White Noise', src: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_3c3b894953.mp3' },
+  { name: 'Rain and Thunder', src: 'https://cdn.pixabay.com/download/audio/2022/08/14/audio_343691d5cf.mp3' },
 ];
 
 export const AudioProvider = ({ children }) => {

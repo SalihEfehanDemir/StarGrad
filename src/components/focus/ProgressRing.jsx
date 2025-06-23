@@ -38,4 +38,4 @@ const ProgressRing = ({ progress, size = 280, strokeWidth = 12, children }) => {
   );
 };
 
-export default ProgressRing; 
+export default React.memo(ProgressRing); 
