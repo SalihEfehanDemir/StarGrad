@@ -79,7 +79,7 @@ const HomePage = () => {
       <main>
       {/* Hero Section */}
         <motion.section 
-          className="text-center py-20 sm:py-24 md:py-32"
+          className="text-center pt-20 pb-10 sm:pt-24 sm:pb-12 md:pt-32 md:pb-16"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -101,26 +101,11 @@ const HomePage = () => {
           >
               Streamline your digital life with our comprehensive suite of productivity tools. From password security to time management and financial tracking, we've got you covered.
           </motion.p>
-            {!session && (
-          <motion.div
-                className="flex justify-center space-x-4"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.7, delay: 0.6 }}
-          >
-                <Link to="/tools/focus-board" className="bg-primary hover:bg-cyan-600 text-dark-bg font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-glow-blue hover:shadow-glow-blue-hover touch-manipulation">
-                  Get Started &rarr;
-            </Link>
-                <button className="bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 border border-white/20 touch-manipulation">
-              Learn More
-            </button>
-          </motion.div>
-            )}
           </div>
         </motion.section>
 
         {/* Tools Section */}
-        <section className="py-16 sm:py-20">
+        <section className="pt-8 pb-16 sm:pt-12 sm:pb-20">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-4">
               Productivity Tools
@@ -150,7 +135,7 @@ const HomePage = () => {
         </section>
 
         {/* Utility Tools Section */}
-        <section className="py-16 sm:py-20">
+        <section className="pt-8 pb-16 sm:pt-12 sm:pb-20">
           <div className="container mx-auto px-4">
           <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-4">
               General Utilities
@@ -281,7 +266,7 @@ const HomePage = () => {
               </div>
             <div className="lg:w-1/2">
               <motion.img 
-                src="/images/image.png" 
+                src="/image.png" 
                 alt="StarGrad Dashboard"
                 className="rounded-xl shadow-2xl"
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -311,12 +296,6 @@ const HomePage = () => {
               <p className="text-dark-bg/80 mb-6">
                 Join thousands of users who are already getting more done with StarGrad. It's free to get started.
               </p>
-              <Link
-                to="/tools/focus-board"
-                className="bg-white text-dark-bg font-bold py-3 px-8 rounded-lg transition-transform duration-300 hover:scale-105 shadow-lg"
-              >
-                Get Started for Free
-              </Link>
             </div>
           </motion.section>
         </div>
