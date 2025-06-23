@@ -21,29 +21,14 @@ const BudgetDashboard = () => {
         setError('');
         try {
             // Fetch accounts for the current user
-            let { data: accountsData, error: accountsError } = await supabase
+            const { data: accountsData, error: accountsError } = await supabase
                 .from('accounts')
                 .select('*')
                 .eq('user_id', session.user.id);
 
             if (accountsError) throw accountsError;
-
-            // If user has no accounts, create default ones for them
-            if (accountsData && accountsData.length === 0) {
-                const defaultAccounts = [
-                    { name: 'Checking', balance: 0, user_id: session.user.id, type: 'checking' },
-                    { name: 'Savings', balance: 0, user_id: session.user.id, type: 'savings' }
-                ];
-                const { data: newAccountsData, error: insertError } = await supabase
-                    .from('accounts')
-                    .insert(defaultAccounts)
-                    .select();
-
-                if (insertError) throw insertError;
-                accountsData = newAccountsData;
-            }
             
-            setAccounts(accountsData);
+            setAccounts(accountsData || []);
 
             // Fetch transactions for the current user
             const { data: transactionsData, error: transactionsError } = await supabase
@@ -178,7 +163,10 @@ const BudgetDashboard = () => {
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-gray-400">No accounts found. Your default accounts will be created shortly.</p>
+                            <div className="text-center py-8">
+                                <p className="text-gray-400 mb-4">Welcome! Your default accounts are ready.</p>
+                                <p className="text-gray-500 text-sm">Add a transaction to get started.</p>
+                             </div>
                         )}
                     </div>
                 </div>
@@ -195,11 +183,11 @@ const BudgetDashboard = () => {
                                         <p className="text-xs sm:text-sm text-gray-400 truncate">{t.subtitle}</p>
                                     </div>
                                     <p className={`font-semibold text-sm sm:text-base flex-shrink-0 ${t.amount >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                        {t.amount >= 0 ? '+' : ''}${t.amount.toFixed(2)}
+                                        {t.amount >= 0 ? '+' : ''}${(t.amount || 0).toFixed(2)}
                                     </p>
                                 </li>
                             )) : (
-                                <p className="text-gray-400 text-center mt-8 text-sm sm:text-base">No transactions yet. Add one!</p>
+                                <p className="text-gray-400 text-center mt-8 text-sm sm:text-base">No transactions yet.</p>
                             )}
                         </ul>
                     </div>
@@ -225,7 +213,7 @@ const TransactionModal = ({ accounts, onAddTransaction, onClose }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!accountId) {
-            alert("Please select an account.");
+            alert("Please select an account. If you see no accounts, please refresh the page.");
             return;
         }
         const finalAmount = type === 'expense' ? -Math.abs(parseFloat(amount) || 0) : Math.abs(parseFloat(amount) || 0);
@@ -236,7 +224,7 @@ const TransactionModal = ({ accounts, onAddTransaction, onClose }) => {
     const titlePlaceholder = type === 'income' ? "Title (e.g., Paycheck)" : "Title (e.g., Coffee)";
     const subtitlePlaceholder = type === 'income' ? "Subtitle (e.g., From work)" : "Subtitle (e.g., Starbucks)";
 
-    if (accounts.length === 0 && !accountId) {
+    if (accounts.length === 0) {
        return (
          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
              <motion.div
@@ -245,14 +233,13 @@ const TransactionModal = ({ accounts, onAddTransaction, onClose }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
             >
-                <h2 className="text-xl font-bold mb-4">No Accounts Found</h2>
-                <p className="mb-6">You need at least one account to add a transaction. Your default accounts should be available shortly.</p>
+                <h2 className="text-xl font-bold mb-4">No Accounts Available</h2>
+                <p className="mb-6">It seems you don't have any accounts. Your default accounts should appear shortly after a page refresh.</p>
                 <button onClick={onClose} className="w-full bg-brand-blue hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg">Close</button>
             </motion.div>
          </div>
        );
     }
-
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">

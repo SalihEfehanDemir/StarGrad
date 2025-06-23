@@ -23,40 +23,32 @@ const LoginPage = () => {
   const handleAuth = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    console.log(`Attempting to ${isSigningUp ? 'sign up' : 'sign in'} with:`, email);
+    setError(null);
 
-    if (isSigningUp) {
-      const { data, error: authError } = await signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username: username,
+    try {
+      if (isSigningUp) {
+        // Sign up
+        const { data, error: authError } = await signUp({
+          email,
+          password,
+          options: {
+            data: {
+              username: username,
+            },
           },
-        },
-      });
-      console.log('Supabase signup response:', { data, authError });
-      if (authError) {
-        console.error('Authentication Error Object:', authError);
-        setError(authError.message);
-      } else {
-        console.log('Sign up successful. Please check email for confirmation.');
+        });
+        if (authError) throw authError;
         alert('Sign up successful! Please check your email for the confirmation link.');
-        setIsSigningUp(false);
-      }
-    } else {
-      const { data, error: authError } = await signIn({ email, password });
-      console.log('Supabase signin response:', { data, authError });
-      if (authError) {
-        console.error('Authentication Error Object:', authError);
-        setError(authError.message);
       } else {
-        console.log('Sign in successful. State will now update and trigger navigation.');
+        // Sign in
+        const { data, error: authError } = await signIn({ email, password });
+        if (authError) throw authError;
       }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (

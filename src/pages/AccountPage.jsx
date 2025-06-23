@@ -1,109 +1,64 @@
-import { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { motion } from 'framer-motion';
-import { supabase } from '../supabaseClient'; // Import supabase client
+import { useXP } from '../contexts/XPContext';
+import XPHeatmap from '../components/XPHeatmap';
+import Achievements from '../components/Achievements';
+import { Award, BarChart, LogOut } from 'lucide-react';
 
 const AccountPage = () => {
-  const { session } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState(session?.user?.user_metadata?.username || '');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+    const { user, signOut } = useAuth();
+    const { totalXP, level, levelBadge } = useXP();
 
-  if (!session) {
     return (
-      <div className="container mx-auto px-4 py-8 text-white">
-        Loading user information...
-      </div>
-    );
-  }
-
-  const { user } = session;
-
-  const handleUpdateUsername = async () => {
-    setLoading(true);
-    setError('');
-    const { data, error } = await supabase.auth.updateUser({
-      data: { username: username }
-    });
-
-    if (error) {
-      setError(error.message);
-      console.error('Error updating username:', error);
-    } else {
-      setIsEditing(false);
-      // The session should update automatically via onAuthStateChange,
-      // but we can also update the local state for immediate feedback.
-      setUsername(data.user.user_metadata.username);
-    }
-    setLoading(false);
-  };
-
-  return (
-    <div className="container mx-auto px-4 py-8 pt-24 text-white">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-2xl mx-auto bg-black/20 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg p-8"
-      >
-        <h1 className="text-4xl font-bold text-white mb-6" style={{ textShadow: '0 0 10px rgba(59, 130, 246, 0.7)' }}>
-          My Account
-        </h1>
-        <div className="space-y-4">
-          <div className="bg-white/5 p-4 rounded-lg">
-            <div className="flex justify-between items-center">
-                <div>
-                    <p className="text-sm text-gray-400">Username</p>
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="w-full p-2 mt-1 text-gray-100 bg-gray-800/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-blue"
-                        />
-                    ) : (
-                        <p className="text-xl font-semibold">{user.user_metadata?.username || 'Not set'}</p>
-                    )}
-                </div>
-                {isEditing ? (
-                    <div className="flex space-x-2">
-                        <button onClick={handleUpdateUsername} disabled={loading} className="text-sm font-bold text-white bg-green-600/80 hover:bg-green-500/80 px-3 py-1 rounded-md transition-colors">
-                            {loading ? '...' : 'Save'}
-                        </button>
-                        <button onClick={() => setIsEditing(false)} className="text-sm font-bold text-white bg-red-600/80 hover:bg-red-500/80 px-3 py-1 rounded-md transition-colors">
-                            Cancel
-                        </button>
+        <div className="min-h-screen p-4 sm:p-8">
+            <div className="max-w-6xl mx-auto">
+                <header className="flex flex-col sm:flex-row justify-between items-center mb-8">
+                    <div>
+                        <h1 className="text-4xl sm:text-5xl font-bold">Your Dashboard</h1>
+                        <p className="text-light-gray mt-2">Welcome back, {user ? user.email : 'Guest'}</p>
                     </div>
-                ) : (
-                    <button onClick={() => setIsEditing(true)} className="text-sm font-bold text-white bg-neon-blue/80 hover:bg-neon-blue px-3 py-1 rounded-md transition-colors">
-                        Edit
+                     <button
+                        onClick={signOut}
+                        className="mt-4 sm:mt-0 flex items-center gap-2 text-red-400 hover:text-red-300 font-semibold"
+                    >
+                        <LogOut size={20} />
+                        Logout
                     </button>
-                )}
+                </header>
+
+                {/* Stats Section */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="bg-glass border border-border-color p-6 rounded-2xl flex items-center gap-4 shadow-lg">
+                        <span className="text-5xl">{levelBadge}</span>
+                        <div>
+                            <p className="text-light-gray text-sm">Level</p>
+                            <p className="text-2xl font-bold">{level}</p>
+                        </div>
+                    </div>
+                    <div className="bg-glass border border-border-color p-6 rounded-2xl flex items-center gap-4 shadow-lg">
+                        <BarChart className="text-5xl text-primary" />
+                        <div>
+                            <p className="text-light-gray text-sm">Total XP</p>
+                            <p className="text-2xl font-bold">{totalXP}</p>
+                        </div>
+                    </div>
+                     <div className="bg-glass border border-border-color p-6 rounded-2xl flex items-center gap-4 shadow-lg">
+                        <Award className="text-5xl text-primary" />
+                        <div>
+                            <p className="text-light-gray text-sm">Achievements Unlocked</p>
+                            <p className="text-2xl font-bold">Coming Soon</p> {/* Placeholder */}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content Area */}
+                <div className="space-y-8">
+                    <XPHeatmap />
+                    <Achievements />
+                </div>
             </div>
-          </div>
-          <div className="bg-white/5 p-4 rounded-lg">
-            <p className="text-sm text-gray-400">Email</p>
-            <p className="text-xl font-semibold">{user.email}</p>
-          </div>
-          <div className="bg-white/5 p-4 rounded-lg">
-            <p className="text-sm text-gray-400">User ID</p>
-            <p className="text-xl font-mono text-gray-300 break-all">{user.id}</p>
-          </div>
-          <div className="bg-white/5 p-4 rounded-lg">
-            <p className="text-sm text-gray-400">Last Signed In</p>
-            <p className="text-xl font-semibold">{new Date(user.last_sign_in_at).toLocaleString()}</p>
-          </div>
         </div>
-        {error && (
-            <div className="mt-4 p-3 bg-red-900/50 border border-red-500 rounded-lg text-center">
-                <p className="font-bold text-white">Error</p>
-                <p className="text-sm text-red-300">{error}</p>
-            </div>
-        )}
-      </motion.div>
-    </div>
-  );
+    );
 };
 
 export default AccountPage; 
