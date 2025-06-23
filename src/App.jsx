@@ -1,93 +1,73 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import React from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/home/HomePage';
 import LoginPage from './pages/LoginPage';
 import PasswordGenerator from './pages/tools/PasswordGenerator';
-import TimeTracker from './pages/tools/TimeTracker';
 import BudgetDashboard from './pages/tools/BudgetDashboard';
+import FocusBoard from './pages/tools/FocusBoard';
+import SmartNotes from './pages/tools/SmartNotes';
+import BMICalculator from './pages/tools/BMICalculator';
+import ZenMode from './pages/tools/ZenMode';
+import PomodoroTimer from './pages/tools/PomodoroTimer';
 import AccountPage from './pages/AccountPage';
 import LoadingSpinner from './components/LoadingSpinner';
+import Navbar from './components/Navbar';
+import XPDisplay from './components/XPDisplay';
+import GoalTracker from './pages/tools/GoalTracker';
+import CalendarPage from './pages/tools/CalendarPage';
+import AnimatedPage from './components/AnimatedPage';
+import { AnimatePresence } from 'framer-motion';
 import './App.css';
 
-// A component to protect routes
-const ProtectedRoute = ({ children }) => {
-  const { session, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="h-screen w-full bg-dark-bg">
-        <LoadingSpinner className="h-full" />
-      </div>
-    );
-  }
-
-  if (!session) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-};
-
-// The main routes for the application
 const AppRoutes = () => {
   const { session } = useAuth();
+  const location = useLocation();
 
   return (
-    <Routes>
-      <Route path="/login" element={session ? <Navigate to="/" replace /> : <LoginPage />} />
-      
-      {/* Public Homepage */}
-      <Route 
-        path="/" 
-        element={
-          <MainLayout>
-            <HomePage />
-          </MainLayout>
-        } 
-      />
-      
-      {/* Protected Tool Routes */}
-      <Route 
-        path="/tools/*"
-        element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Routes>
-                <Route path="password-generator" element={<PasswordGenerator />} />
-                <Route path="time-tracker" element={<TimeTracker />} />
-                <Route path="budget-dashboard" element={<BudgetDashboard />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* Protected Account Route */}
-      <Route 
-        path="/account" 
-        element={
-          <ProtectedRoute>
-            <MainLayout>
-              <AccountPage />
-            </MainLayout>
-          </ProtectedRoute>
-        } 
-      />
-      
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/login"
+          element={
+            <AnimatedPage hasNavbar={false}>
+              {session ? <Navigate to="/" replace /> : <LoginPage />}
+            </AnimatedPage>
+          }
+        />
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<AnimatedPage><HomePage /></AnimatedPage>} />
+          <Route path="/account" element={<AnimatedPage><AccountPage /></AnimatedPage>} />
+          <Route path="/tools/focus-board" element={<AnimatedPage><FocusBoard /></AnimatedPage>} />
+          <Route path="/tools/smart-notes" element={<AnimatedPage><SmartNotes /></AnimatedPage>} />
+          <Route path="/tools/bmi-calculator" element={<AnimatedPage><BMICalculator /></AnimatedPage>} />
+          <Route path="/tools/password-generator" element={<AnimatedPage><PasswordGenerator /></AnimatedPage>} />
+          <Route path="/tools/zen-mode" element={<AnimatedPage><ZenMode /></AnimatedPage>} />
+          <Route path="/tools/pomodoro-timer" element={<AnimatedPage><PomodoroTimer /></AnimatedPage>} />
+          <Route path="/tools/budget-dashboard" element={<AnimatedPage><BudgetDashboard /></AnimatedPage>} />
+          <Route path="/tools/goals" element={<AnimatedPage><GoalTracker /></AnimatedPage>} />
+          <Route path="/tools/calendar" element={<AnimatedPage><CalendarPage /></AnimatedPage>} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AnimatePresence>
   );
-};
+}
 
 function App() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen bg-dark-bg"><LoadingSpinner /></div>;
+  }
+
   return (
-    <Router>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
-    </Router>
+    <>
+      <Navbar />
+      <XPDisplay />
+      <AppRoutes />
+    </>
   );
 }
 

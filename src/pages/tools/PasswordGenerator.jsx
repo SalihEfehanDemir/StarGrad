@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaClipboard } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import CustomSlider from '../../components/CustomSlider';
 
 const PasswordGenerator = () => {
   const [length, setLength] = useState(12);
@@ -59,19 +60,16 @@ const PasswordGenerator = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label htmlFor="length" className="block mb-2 font-medium text-gray-200">Password Length: {length}</label>
-            <input
-              type="range"
-              id="length"
-              min="4"
-              max="32"
+          <div className="flex flex-col justify-center">
+            <label htmlFor="length" className="block mb-4 font-medium text-gray-200">Password Length: {length}</label>
+            <CustomSlider
+              min={4}
+              max={32}
               value={length}
-              onChange={(e) => setLength(e.target.value)}
-              className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer slider"
+              onChange={setLength}
             />
           </div>
-          <div className="space-y-3">
+          <div className="space-y-3 pt-2 md:pt-0 md:pl-4 flex flex-col justify-center">
             <div className="flex items-center">
               <input type="checkbox" id="symbols" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} className="w-4 h-4 text-brand-blue bg-gray-700 border-gray-600 rounded focus:ring-brand-blue" />
               <label htmlFor="symbols" className="ml-2 text-sm font-medium text-gray-200">Include Symbols</label>
