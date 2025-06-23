@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useXP } from '../contexts/XPContext';
 import XPHeatmap from '../components/XPHeatmap';
 import Achievements from '../components/Achievements';
-import { Award, BarChart, LogOut } from 'lucide-react';
+import { Award, BarChart, Pencil, Check, X } from 'lucide-react';
 
 const AccountPage = () => {
-    const { user, signOut } = useAuth();
-    const { totalXP, level, levelBadge } = useXP();
+    const { user } = useAuth();
+    const { totalXP, level, levelBadge, username, updateUsername } = useXP();
+    const [isEditingUsername, setIsEditingUsername] = useState(false);
+    const [newUsername, setNewUsername] = useState(username || '');
+
+    const handleSaveUsername = async () => {
+        if (newUsername.trim() && newUsername !== username) {
+            const success = await updateUsername(newUsername.trim());
+            if (success) {
+                setIsEditingUsername(false);
+            } else {
+                // Handle error display if needed
+                alert("Failed to update username.");
+            }
+        } else {
+            setIsEditingUsername(false);
+        }
+    };
 
     return (
         <div className="min-h-screen p-4 sm:p-8">
@@ -15,15 +31,41 @@ const AccountPage = () => {
                 <header className="flex flex-col sm:flex-row justify-between items-center mb-8">
                     <div>
                         <h1 className="text-4xl sm:text-5xl font-bold">Your Dashboard</h1>
-                        <p className="text-light-gray mt-2">Welcome back, {user ? user.email : 'Guest'}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                            {!isEditingUsername ? (
+                                <>
+                                    <p className="text-light-gray">Welcome back, {username || 'Guest'}</p>
+                                    <button 
+                                        onClick={() => {
+                                            setNewUsername(username || '');
+                                            setIsEditingUsername(true);
+                                        }} 
+                                        className="p-1 rounded-full hover:bg-primary/20 text-primary transition-all duration-300"
+                                        aria-label="Edit username"
+                                    >
+                                        <Pencil size={16} />
+                                    </button>
+                                </>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <input 
+                                        type="text"
+                                        value={newUsername}
+                                        onChange={(e) => setNewUsername(e.target.value)}
+                                        className="bg-dark-bg border border-border-color rounded-md px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSaveUsername()}
+                                        autoFocus
+                                    />
+                                    <button onClick={handleSaveUsername} className="p-1.5 rounded-full bg-primary/20 text-primary hover:bg-primary/30" aria-label="Save username">
+                                        <Check size={20} />
+                                    </button>
+                                    <button onClick={() => setIsEditingUsername(false)} className="p-1.5 rounded-full bg-secondary/20 text-secondary hover:bg-secondary/30" aria-label="Cancel editing username">
+                                        <X size={20} />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                     <button
-                        onClick={signOut}
-                        className="mt-4 sm:mt-0 flex items-center gap-2 text-red-400 hover:text-red-300 font-semibold"
-                    >
-                        <LogOut size={20} />
-                        Logout
-                    </button>
                 </header>
 
                 {/* Stats Section */}

@@ -1,82 +1,88 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import FocusCard from '../../components/focus-board/FocusCard';
+import React from 'react';
+import { useFocusBoard } from '../../hooks/useFocusBoard';
+import { useXP } from '../../contexts/XPContext';
+import FocusAreasCard from '../../components/focus-board/FocusAreasCard';
 import TasksCard from '../../components/focus-board/TasksCard';
-import GoalsCard from '../../components/focus-board/GoalsCard';
-
-const usePersistentState = (key, defaultValue) => {
-  const [state, setState] = useState(() => {
-    const storedValue = localStorage.getItem(key);
-    if (storedValue === null) {
-      return defaultValue;
-    }
-    try {
-      return JSON.parse(storedValue);
-    } catch (error) {
-      // If parsing fails, it might be a raw string from a previous version
-      console.warn(`Could not parse a value from localStorage for key “${key}”, using it as a raw value.`);
-      return storedValue;
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state));
-  }, [key, state]);
-
-  return [state, setState];
-};
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { Award } from 'lucide-react';
 
 const FocusBoard = () => {
-  const [tasks, setTasks] = usePersistentState('focusBoard-tasks', []);
-  const [goals, setGoals] = usePersistentState('focusBoard-goals', []);
-  const [focus, setFocus] = usePersistentState('focusBoard-focus', '');
+    const { 
+        loading, 
+        focusAreas, 
+        dailyTasks, 
+        addFocusArea, 
+        deleteFocusArea, 
+        addTask, 
+        toggleTask, 
+        deleteTask 
+    } = useFocusBoard();
 
-  const handleAddTask = useCallback((text) => {
-    setTasks(prevTasks => [...prevTasks, { id: Date.now(), text, done: false }]);
-  }, [setTasks]);
+    const { addXP } = useXP();
+    const TASK_COMPLETION_XP = 5;
 
-  const handleToggleTask = useCallback((id) => {
-    setTasks(prevTasks => prevTasks.map(task => task.id === id ? { ...task, done: !task.done } : task));
-  }, [setTasks]);
+    const handleToggleTask = async (taskId) => {
+        const wasCompleted = await toggleTask(taskId);
+        if (wasCompleted) {
+            addXP(TASK_COMPLETION_XP);
+        }
+    };
 
-  const handleDeleteTask = useCallback((id) => {
-    setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
-  }, [setTasks]);
-
-  const handleAddGoal = useCallback((text) => {
-    setGoals(prevGoals => [...prevGoals, { id: Date.now(), text, progress: 0 }]);
-  }, [setGoals]);
-
-  const handleUpdateGoalProgress = useCallback((id, newProgress) => {
-    const progress = Math.min(100, Math.max(0, newProgress));
-    setGoals(prevGoals => prevGoals.map(goal => goal.id === id ? { ...goal, progress } : goal));
-  }, [setGoals]);
-
-  const handleDeleteGoal = useCallback((id) => {
-    setGoals(prevGoals => prevGoals.filter(goal => goal.id !== id));
-  }, [setGoals]);
+    const unassignedTasks = dailyTasks.filter(task => !task.focus_area_id);
+    const completedTasksCount = dailyTasks.filter(task => task.is_completed).length;
+    const totalTasksCount = dailyTasks.length;
+    
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-dark-bg">
+                <LoadingSpinner />
+            </div>
+        );
+    }
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 min-h-screen">
+        <div className="min-h-screen bg-dark-bg p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">Focus Board</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <FocusCard focus={focus} setFocus={setFocus} />
-          
+                <header className="mb-8">
+                    <h1 className="text-3xl md:text-4xl font-bold text-slate-100">Focus Board</h1>
+                    <p className="text-light-gray mt-1">Organize your day, focus on what matters.</p>
+                </header>
+                
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+                    <div className="xl:col-span-2">
+                         <FocusAreasCard 
+                            focusAreas={focusAreas}
+                            tasks={dailyTasks}
+                            onAddArea={addFocusArea}
+                            onDeleteArea={deleteFocusArea}
+                            onAddTask={addTask}
+                            onToggleTask={handleToggleTask}
+                            onDeleteTask={deleteTask}
+                        />
+                    </div>
+                    <div className="space-y-6">
           <TasksCard 
-            tasks={tasks}
-            onAddTask={handleAddTask}
+                            title="Inbox" 
+                            tasks={unassignedTasks} 
+                            onAddTask={addTask}
             onToggleTask={handleToggleTask}
-            onDeleteTask={handleDeleteTask}
-          />
-
-          <GoalsCard 
-            goals={goals}
-            onAddGoal={handleAddGoal}
-            onUpdateGoal={handleUpdateGoalProgress}
-            onDeleteGoal={handleDeleteGoal}
+                            onDeleteTask={deleteTask}
+                            icon={<Award size={20} className="text-primary" />}
           />
         </div>
+                </div>
+
+                <footer className="text-center p-4 bg-glass border border-border-color rounded-lg shadow-sm">
+                    <p className="font-semibold text-slate-300">
+                        Today's Progress: {completedTasksCount} / {totalTasksCount} tasks completed
+                    </p>
+                    <div className="w-full bg-dark-bg rounded-full h-2.5 mt-2">
+                        <div 
+                            className="bg-primary h-2.5 rounded-full" 
+                            style={{ width: `${totalTasksCount > 0 ? (completedTasksCount / totalTasksCount) * 100 : 0}%` }}
+                        ></div>
+                    </div>
+                </footer>
       </div>
     </div>
   );

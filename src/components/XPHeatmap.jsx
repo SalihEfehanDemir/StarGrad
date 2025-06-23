@@ -50,4 +50,4 @@ const XPHeatmap = () => {
     );
 };
 
-export default XPHeatmap; 
+export default React.memo(XPHeatmap); 

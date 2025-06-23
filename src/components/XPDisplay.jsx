@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useXP } from '../contexts/XPContext';
 
@@ -19,7 +19,7 @@ const XPDisplay = () => {
     }, [lastXPUpdate]);
 
     return (
-        <div className="fixed bottom-24 right-5 z-50 pointer-events-none">
+        <div className="fixed bottom-24 right-3 sm:right-5 z-50 pointer-events-none">
             <AnimatePresence>
                 {xpGains.map((gain, index) => (
                     <motion.div
@@ -28,7 +28,7 @@ const XPDisplay = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -20, scale: 0.8 }}
                         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-                        className="bg-green-500/80 text-white font-bold text-lg px-4 py-2 rounded-full shadow-lg mb-2"
+                        className="bg-green-500/80 text-white font-bold text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg mb-2"
                         style={{ bottom: `${index * 50}px` }}
                     >
                         +{gain.amount} XP
@@ -39,4 +39,4 @@ const XPDisplay = () => {
     );
 };
 
-export default XPDisplay; 
+export default React.memo(XPDisplay); 

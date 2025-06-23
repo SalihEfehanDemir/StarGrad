@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { FaExclamationTriangle } from 'react-icons/fa';
 
@@ -26,4 +27,4 @@ const ErrorMessage = ({ message, onRetry, className = '' }) => {
   );
 };
 
-export default ErrorMessage; 
+export default React.memo(ErrorMessage); 

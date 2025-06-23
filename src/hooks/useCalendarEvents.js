@@ -1,61 +1,97 @@
 import { useState, useEffect, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { supabase } from '../supabaseClient';
+import { useAuth } from '../contexts/AuthContext';
 
 export const useCalendarEvents = () => {
-    const [events, setEvents] = useState(() => {
+    const { session } = useAuth();
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchEvents = useCallback(async () => {
+        if (!session) return;
+        setLoading(true);
         try {
-            const savedEvents = localStorage.getItem('calendarEvents');
-            return savedEvents ? JSON.parse(savedEvents) : [];
+            const { data, error } = await supabase
+                .from('calendar_events')
+                .select('*')
+                .eq('user_id', session.user.id);
+
+            if (error) throw error;
+            setEvents(data || []);
         } catch (error) {
-            console.error("Failed to parse events from localStorage", error);
-            return [];
+            console.error("Error fetching calendar events:", error);
+        } finally {
+            setLoading(false);
         }
-    });
+    }, [session]);
 
     useEffect(() => {
+        fetchEvents();
+    }, [fetchEvents]);
+
+    const addEvent = async (eventData) => {
+        if (!session) return;
         try {
-            localStorage.setItem('calendarEvents', JSON.stringify(events));
+            const { data, error } = await supabase
+                .from('calendar_events')
+                .insert([{ ...eventData, user_id: session.user.id }])
+                .select();
+            
+            if (error) throw error;
+            if (data) {
+                setEvents(prevEvents => [...prevEvents, data[0]]);
+            }
         } catch (error) {
-            console.error("Failed to save events to localStorage", error);
+            console.error('Error adding event:', error);
         }
-    }, [events]);
+    };
 
-    const addEvent = useCallback((eventData) => {
-        const newEvent = {
-            id: uuidv4(),
-            ...eventData,
-            status: 'pending' // 'pending', 'done', 'skipped'
-        };
-        setEvents(prevEvents => [...prevEvents, newEvent]);
-    }, []);
+    const updateEvent = async (eventId, updatedData) => {
+        try {
+            const { data, error } = await supabase
+                .from('calendar_events')
+                .update(updatedData)
+                .eq('id', eventId)
+                .select();
 
-    const updateEvent = useCallback((eventId, updatedData) => {
+            if (error) throw error;
+            if (data) {
         setEvents(prevEvents =>
             prevEvents.map(event =>
-                event.id === eventId ? { ...event, ...updatedData } : event
+                        event.id === eventId ? data[0] : event
             )
         );
-    }, []);
+            }
+        } catch (error) {
+            console.error('Error updating event:', error);
+        }
+    };
 
-    const deleteEvent = useCallback((eventId) => {
+    const deleteEvent = async (eventId) => {
+        try {
+            const { error } = await supabase
+                .from('calendar_events')
+                .delete()
+                .eq('id', eventId);
+            
+            if (error) throw error;
         setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
-    }, []);
+        } catch (error) {
+            console.error('Error deleting event:', error);
+        }
+    };
     
-    const updateEventStatus = useCallback((eventId, status) => {
+    const updateEventStatus = async (eventId, status) => {
         let eventCompleted = false;
-        setEvents(prevEvents =>
-            prevEvents.map(event => {
-                if (event.id === eventId) {
-                    if(status === 'done' && event.status !== 'done'){
+        const currentEvent = events.find(e => e.id === eventId);
+        if (currentEvent && status === 'done' && currentEvent.status !== 'done') {
                         eventCompleted = true;
                     }
-                    return { ...event, status };
-                }
-                return event;
-            })
-        );
-        return eventCompleted;
-    }, []);
 
-    return { events, addEvent, updateEvent, deleteEvent, updateEventStatus };
+        await updateEvent(eventId, { status });
+        
+        return eventCompleted;
+    };
+
+    return { events, loading, addEvent, updateEvent, deleteEvent, updateEventStatus };
 }; 

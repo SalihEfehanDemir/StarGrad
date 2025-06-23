@@ -88,4 +88,4 @@ const CustomSlider = ({ value, onChange, min = 0, max = 100 }) => {
   );
 };
 
-export default CustomSlider; 
+export default React.memo(CustomSlider); 
