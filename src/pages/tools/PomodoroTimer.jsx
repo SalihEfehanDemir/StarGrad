@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { FaPlay, FaPause, FaRedo, FaCog, FaForward, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
-import { Music, ChevronDown } from 'lucide-react';
+import { FaPlay, FaPause, FaRedo, FaCog, FaForward, FaVolumeUp } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { useAudio } from '../../contexts/AudioContext';
 import CustomSlider from '../../components/CustomSlider';
 import ProgressRing from '../../components/focus/ProgressRing';
 import { useXP } from '../../contexts/XPContext';
@@ -76,8 +74,7 @@ const PomodoroTimer = () => {
     const [isSoundMenuOpen, setSoundMenuOpen] = useState(false);
     const [alertVolume, setAlertVolume] = useState(() => parseInt(localStorage.getItem('alertVolume') || '50', 10));
 
-    const { play, pause, setTrack, tracks, currentTrack, isPlaying: isAudioPlaying, setVolume, volume } = useAudio();
-    const notificationSound = useMemo(() => new Audio('https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb63024842.mp3'), []);
+    const notificationSound = useMemo(() => new Audio('/audio/notification.mp3'), []);
 
     const { addXP, xpHistory } = useXP();
 
@@ -122,7 +119,6 @@ const PomodoroTimer = () => {
     }, [addXP]);
 
     const handleSessionComplete = useCallback(() => {
-        if (isAudioPlaying) pause();
         notificationSound.play().catch(e => console.error("Error playing sound:", e));
 
         if (mode === 'pomodoro') {
@@ -147,7 +143,7 @@ const PomodoroTimer = () => {
             setMode('pomodoro');
         }
         setIsActive(false);
-    }, [mode, pomodorosToday, settings.sessionsPerLongBreak, getTodayPomodoroXP, addPomodoroXP, sessionCount, DAILY_XP_CAP, notificationSound, isAudioPlaying, pause]);
+    }, [mode, pomodorosToday, settings.sessionsPerLongBreak, getTodayPomodoroXP, addPomodoroXP, sessionCount, DAILY_XP_CAP, notificationSound]);
 
     const toggleTimer = () => setIsActive(prev => !prev);
 
@@ -219,19 +215,22 @@ const PomodoroTimer = () => {
             />
 
             <div className="absolute top-4 right-4 flex items-center gap-4">
-                <div className="relative w-40">
-                    <button onClick={toggleSoundMenu} className="w-full flex items-center justify-between p-2 bg-white/10 rounded-lg">
-                        <Music size={20}/>
-                        <span className="truncate flex-1 mx-2">{currentTrack ? currentTrack.title : 'Mute'}</span>
-                        <ChevronDown size={20}/>
+                <div className="relative">
+                    <button onClick={toggleSoundMenu} className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
+                        <FaVolumeUp size={20} />
                     </button>
                     <AnimatePresence>
                         {isSoundMenuOpen && (
-                            <motion.div initial={{opacity: 0, y: -10}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -10}} className="absolute top-full right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl z-10">
-                                {tracks.map((track, index) => (
-                                    <button key={index} onClick={() => { setTrack(index); setSoundMenuOpen(false); }} className="block w-full text-left px-4 py-2 hover:bg-gray-700">{track.title}</button>
-                                ))}
-                                <button onClick={() => { pause(); setSoundMenuOpen(false); }} className="block w-full text-left px-4 py-2 hover:bg-gray-700 border-t border-gray-700">Mute</button>
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="absolute top-full right-0 mt-2 w-72 bg-gray-800 rounded-lg shadow-xl p-4 z-20"
+                            >
+                                <div className="mt-4 pt-4 border-t border-gray-700">
+                                    <p className="text-sm font-bold mb-2">Alert Volume</p>
+                                    <CustomSlider value={alertVolume} onChange={setAlertVolume} min={0} max={100} step={1} />
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
