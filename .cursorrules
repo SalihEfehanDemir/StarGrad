@@ -1,0 +1,40 @@
+### **Project: Jacker**
+
+This document outlines the rules and conventions for AI-assisted development on the Jacker project. Following these guidelines will ensure consistency, quality, and efficiency.
+
+### **Tech Stack**
+
+*   **Frontend**: React, Vite, TailwindCSS
+*   **Backend**: Supabase (Auth, Database)
+*   **Deployment**: Vercel
+
+### **Development Principles**
+
+1.  **Plan Before Coding**:
+    *   Before implementing new features, we will discuss the plan.
+    *   I will start with high-level goals and break them down into smaller, actionable steps, then confirm the approach with you before writing code.
+
+2.  **Leverage Existing Code**:
+    *   This project has an established structure. Before creating new components, hooks, or styles, I will check for existing implementations that can be reused or adapted.
+    *   I will refer to `src/components`, `src/hooks`, `src/pages`, and `src/contexts` for existing patterns to maintain consistency.
+
+3.  **Code Style and Conventions**:
+    *   I will follow the existing code style, using functional components with hooks.
+    *   Styling will be done primarily with TailwindCSS. I will avoid writing plain CSS in `.css` files unless absolutely necessary for global styles or complex animations.
+    *   Components I create will be modular and reusable.
+
+4.  **Supabase Interaction**:
+    *   All Supabase client interactions will be handled through the existing `supabaseClient.js`.
+    *   When dealing with user data, I will always prioritize security and data privacy.
+
+5.  **Commenting and Documentation**:
+    *   As you suggested, I can add JSDoc-style comments to new functions to explain their purpose, parameters, and return values.
+    *   I will focus on explaining the "why" behind non-obvious code.
+
+6.  **Communication**:
+    *   I will be proactive in asking for clarification if a request is ambiguous.
+    *   When I propose a solution, I will explain the reasoning behind the implementation.
+
+### **My Commitment**
+
+I will adhere to these rules to provide the best possible assistance. Giving me as much context as possible—by referencing relevant files (`@`-mentioning them), providing documentation links, and sharing error messages—will help me generate more accurate and helpful responses. 

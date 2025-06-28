@@ -20,6 +20,14 @@ import AnimatedPage from './components/AnimatedPage';
 import { AnimatePresence } from 'framer-motion';
 import './App.css';
 
+const ProtectedRoute = ({ children }) => {
+  const { session } = useAuth();
+  if (!session) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
 const AppRoutes = () => {
   const { session } = useAuth();
   const location = useLocation();
@@ -37,15 +45,15 @@ const AppRoutes = () => {
         />
         <Route element={<MainLayout />}>
           <Route path="/" element={<AnimatedPage><HomePage /></AnimatedPage>} />
-          <Route path="/account" element={<AnimatedPage><AccountPage /></AnimatedPage>} />
-          <Route path="/tools/focus-board" element={<AnimatedPage><FocusBoard /></AnimatedPage>} />
-          <Route path="/tools/smart-notes" element={<AnimatedPage><SmartNotes /></AnimatedPage>} />
+          <Route path="/account" element={<ProtectedRoute><AnimatedPage><AccountPage /></AnimatedPage></ProtectedRoute>} />
+          <Route path="/tools/focus-board" element={<ProtectedRoute><AnimatedPage><FocusBoard /></AnimatedPage></ProtectedRoute>} />
+          <Route path="/tools/smart-notes" element={<ProtectedRoute><AnimatedPage><SmartNotes /></AnimatedPage></ProtectedRoute>} />
           <Route path="/tools/bmi-calculator" element={<AnimatedPage><BMICalculator /></AnimatedPage>} />
           <Route path="/tools/password-generator" element={<AnimatedPage><PasswordGenerator /></AnimatedPage>} />
           <Route path="/tools/zen-mode" element={<AnimatedPage><ZenMode /></AnimatedPage>} />
           <Route path="/tools/pomodoro-timer" element={<AnimatedPage><PomodoroTimer /></AnimatedPage>} />
-          <Route path="/tools/budget-dashboard" element={<AnimatedPage><BudgetDashboard /></AnimatedPage>} />
-          <Route path="/tools/calendar" element={<AnimatedPage><CalendarPage /></AnimatedPage>} />
+          <Route path="/tools/budget-dashboard" element={<ProtectedRoute><AnimatedPage><BudgetDashboard /></AnimatedPage></ProtectedRoute>} />
+          <Route path="/tools/calendar" element={<ProtectedRoute><AnimatedPage><CalendarPage /></AnimatedPage></ProtectedRoute>} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

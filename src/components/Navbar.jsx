@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaSignOutAlt, FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,6 +21,7 @@ const useOutsideClick = (ref, callback) => {
 const Navbar = () => {
   const { session, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -52,6 +53,12 @@ const Navbar = () => {
   
   const handleDropdownToggle = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+    closeMobileMenu();
   };
 
   useEffect(() => {
@@ -178,7 +185,7 @@ const Navbar = () => {
                 <>
                   <NavLink to="/account" className={({ isActive }) => `text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 ${isActive ? 'bg-gray-700/50 shadow-inner' : ''}`}>Account</NavLink>
                   <button
-                    onClick={signOut}
+                    onClick={handleSignOut}
                     className="flex items-center text-gray-300 hover:text-red-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 hover:bg-red-500/10"
                   >
                     <FaSignOutAlt className="mr-2" size={16} /> Logout
@@ -295,24 +302,30 @@ const Navbar = () => {
               </div>
               
               <div className="border-t border-gray-700 mt-4 pt-4 space-y-1">
-                  <NavLink 
-                    to="/account" 
-                    onClick={closeMobileMenu}
-                    className={({ isActive }) => `block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium transition-colors duration-300 ${isActive ? 'bg-gray-700/50 shadow-inner' : ''}`}
-                  >
-                    Account
-                  </NavLink>
+                <NavLink 
+                  to="/account" 
+                  onClick={closeMobileMenu}
+                  className={({ isActive }) => `block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium transition-colors duration-300 ${isActive ? 'bg-gray-700/50 shadow-inner' : ''}`}
+                >
+                  Account
+                </NavLink>
+                {session ? (
                   <button
-                    onClick={() => {
-                      signOut();
-                      closeMobileMenu();
-                    }}
-                  className="w-full flex items-center text-left text-gray-300 hover:text-red-400 px-3 py-2 rounded-md text-base font-medium transition-colors duration-300 hover:bg-red-500/10"
+                    onClick={handleSignOut}
+                    className="w-full flex items-center text-left text-gray-300 hover:text-red-400 px-3 py-2 rounded-md text-base font-medium transition-colors duration-300 hover:bg-red-500/10"
                   >
-                  <FaSignOutAlt className="mr-3" size={18} /> Logout
+                    <FaSignOutAlt className="mr-3" size={18} /> Logout
                   </button>
+                ) : (
+                  <NavLink
+                    to="/login"
+                    onClick={closeMobileMenu}
+                    className="w-full flex items-center text-left text-primary px-3 py-2 rounded-md text-base font-medium transition-colors duration-300"
+                  >
+                    Login
+                  </NavLink>
+                )}
               </div>
-
             </div>
           </motion.div>
         )}

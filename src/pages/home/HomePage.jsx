@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   FaCalculator, FaLock, FaClock, FaStickyNote, FaWind, FaWallet,
   FaBullseye, FaHeartbeat, FaLightbulb, FaBrain, FaTrophy, FaChartLine,
-  FaUsers, FaStar, FaCheckCircle, FaArrowRight, FaGithub, FaTwitter, FaLinkedin, FaCalendarAlt, FaTasks, FaHourglassHalf, FaKey, FaCoins, FaShieldAlt, FaRocket, FaBolt
+  FaUsers, FaStar, FaCheckCircle, FaArrowRight, FaGithub, FaTwitter, FaLinkedin, FaCalendarAlt, FaTasks, FaHourglassHalf, FaKey, FaCoins, FaShieldAlt, FaRocket, FaBolt, FaHourglassEnd
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
@@ -13,42 +13,36 @@ const HomePage = () => {
 
   const productivityTools = [
     {
+      title: 'Zen Mode',
+      description: 'Minimalist focus canvas with a lofi music player.',
+      link: '/tools/zen-mode',
+      icon: <FaWind className="text-4xl text-blue-400" />,
+      badge: 'Enhanced'
+    },
+    {
       title: 'Event Calendar',
-      description: 'Organize your schedule, plan events, and track your time.',
+      description: 'Organize your schedule and track important dates. Login required.',
       icon: <FaCalendarAlt className="text-4xl text-red-400" />,
       link: '/tools/calendar',
-      badge: 'New',
     },
     {
       title: 'Focus Board',
-      description: 'A Kanban board to organize tasks and goals.',
+      description: 'A Kanban board to organize tasks and goals. Login required.',
       link: '/tools/focus-board',
       icon: <FaTasks className="text-4xl text-purple-400" />
     },
     {
       title: 'Smart Notes',
-      description: 'A rich-text editor for your ideas and plans.',
+      description: 'A rich-text editor for your ideas and plans. Login required.',
       link: '/tools/smart-notes',
       icon: <FaStickyNote className="text-4xl text-pink-400" />
-    },
-    {
-      title: 'Zen Mode',
-      description: 'A minimalist writing canvas for pure focus.',
-      link: '/tools/zen-mode',
-      icon: <FaWind className="text-4xl text-blue-400" />
-    },
-    {
-      title: 'Pomodoro Timer',
-      description: 'Boost productivity with the Pomodoro technique.',
-      link: '/tools/pomodoro-timer',
-      icon: <FaHourglassHalf className="text-4xl text-red-400" />
     }
   ];
   
   const utilityTools = [
     { name: "Password Generator", path: "/tools/password-generator", icon: <FaKey className="text-4xl text-primary" />, description: "Create strong and secure passwords." },
-    { name: "Budget Tracker", path: "/tools/budget-dashboard", icon: <FaCoins className="text-4xl text-amber" />, description: "Manage your finances and track spending." },
-    { name: "BMI Calculator", path: "/tools/bmi-calculator", icon: <FaHeartbeat className="text-4xl text-red-400" />, description: "Calculate and track your BMI." },
+    { name: "Budget Tracker", path: "/tools/budget-dashboard", icon: <FaCoins className="text-4xl text-amber" />, description: "Manage finances and track spending. Login required." },
+    { name: "BMI Calculator", path: "/tools/bmi-calculator", icon: <FaHeartbeat className="text-4xl text-red-400" />, description: "Calculate and track your body mass index." },
   ];
 
   const features = [
@@ -117,11 +111,18 @@ const HomePage = () => {
               {productivityTools.map((tool, index) => (
                 <Link to={tool.link} key={tool.title}>
                   <motion.div
-                    className="group p-6 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg hover:shadow-2xl hover:border-white/20 transform hover:-translate-y-2 transition-all duration-300 h-full touch-manipulation text-center"
+                    className="group relative p-6 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg hover:shadow-2xl hover:border-white/20 transform hover:-translate-y-2 transition-all duration-300 h-full touch-manipulation text-center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-        >
+                  >
+                    {tool.badge && (
+                      <div className="absolute top-0 right-0 -mt-2 -mr-2">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-dark-bg">
+                          {tool.badge}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-center items-center mb-4">
                       {tool.icon}
                     </div>
