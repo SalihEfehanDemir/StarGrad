@@ -10,7 +10,12 @@ const channels = [
     { id: 'tNkZsRW7h2c', name: 'SomaFM Stream' },
     { id: '7NOSDKb0HlU', name: 'Lofi Beats Radio' },
     { id: '1tJ8sc8I4z0', name: '4K Lofi Beats Radio' },
-    { id: 'qLuc8kZty1A', name: 'Minecraft Relaxing Music' },
+    { id: '2LB-YgccqdI', name: 'Synthwave Radio' },
+    { id: 'UI5NKkW8acM', name: 'Tokyo Night Drive' },
+    { id: 'IxPANmjPaek', name: 'Ambient Lofi' },
+    { id: 'FrdjVhqSEv4', name: 'Chill Drive' },
+    { id: '4xDzrJKXOOY', name: 'Space Lofi' },
+    { id: '_bLX5WfDQfM', name: 'Medieval Lofi' },
 ];
 
 const LofiPlayer = () => {
