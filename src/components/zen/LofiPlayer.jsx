@@ -5,10 +5,12 @@ import { BsSoundwave } from 'react-icons/bs';
 
 const channels = [
     { id: 'jfKfPfyJRdk', name: 'Lofi Girl' },
-    { id: 'qH3fETPsqXU', name: 'Coffee Shop Radio' },
-    { id: '5yx6BWlEVcY', name: 'Lofi Hip Hop Radio' },
-    { id: 'tNkZsRW7h2c', name: 'Hip Hop Radio' },
-    { id: '7NOSDKb0HlU', name: 'Chill Drive' },
+    { id: 'qH3fETPsqXU', name: '24/7 Chill Lofi Radio' },
+    { id: '5yx6BWlEVcY', name: 'Chillhop Radio' },
+    { id: 'tNkZsRW7h2c', name: 'SomaFM Stream' },
+    { id: '7NOSDKb0HlU', name: 'Lofi Beats Radio' },
+    { id: '1tJ8sc8I4z0', name: '4K Lofi Beats Radio' },
+    { id: 'qLuc8kZty1A', name: 'Minecraft Relaxing Music' },
 ];
 
 const LofiPlayer = () => {
